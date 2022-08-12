@@ -1,0 +1,15 @@
+Name: user.rpc
+ListenOn: 127.0.0.1:9011
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: user.rpc
+# Mysql数据库
+Mysql:
+  DataSource: root:123456@tcp(127.0.0.1:3306)/enjoyblog?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+# Redis缓存
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass: '123456'
+    Type: node

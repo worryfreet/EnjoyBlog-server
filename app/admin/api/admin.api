@@ -1,0 +1,38 @@
+syntax = "v1"
+
+import "admin_user.api"
+import "admin_article.api"
+
+info(
+	title: "EnjoyBlog-server admin.api"
+	desc: "后端管理员api模块"
+	author: "github.com/worryfreet"
+	email: "worryfreet@163.com"
+	version: "v1.0"
+	create_time: "2022/08/10"
+	update_time: "2022/08/10"
+)
+
+@server(
+	jwt: JwtAuth
+	group: user
+	prefix: api/admin/user
+)
+service admin {
+	@handler GetUserInfo
+	get /info (UserInfoReq) returns (UserInfoResp)
+	
+	@handler GetUserList
+	get /list (UserListReq) returns (UserListResp)
+}
+
+@server(
+	jwt: JwtAuth
+	group: article
+	prefix: api/admin/article
+)
+service admin {
+	@handler GetArticleInfo
+	get /info (ArticleInfoReq) returns (ArticleInfoResp)
+
+}

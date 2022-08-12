@@ -1,0 +1,94 @@
+syntax = "v1"
+
+info(
+	title: "EnjoyBlog-server article.api"
+	desc: "后端文章api模块"
+	author: "github.com/worryfreet"
+	email: "worryfreet@163.com"
+	version: "v1.0"
+	create_time: "2022/08/11"
+	update_time: "2022/08/11"
+)
+
+type (
+	// 文章详情
+	ArticleInfoReq {
+		ArticleId string `form:"articleId"`
+	}
+	// 我的文章列表
+	MyArticleListReq {
+		Page           int    `form:"page"`     // 页面
+		PageSize       int    `form:"pageSize"` // 页面大小
+		Desc           int    `form:"desc"`     // 1降序, 0默认升序
+		OrderKey       string `form:"orderKey"` // 排序关键字
+		Tag            string `form:"tag"`
+		UserId         string `form:"userId"`
+		ArticleGroupId string `form:"articleGroupId"`
+	}
+	// 公开的文章列表
+	ArticleListReq {
+		Page     int    `form:"page"`     // 页面
+		PageSize int    `form:"pageSize"` // 页面大小
+		Desc     int    `form:"desc"`     // 1降序, 0默认升序
+		OrderKey string `form:"orderKey"` // 排序关键字
+		Tag      string `form:"tag"`
+	}
+	// 通用列表响应体
+	ArticleListResp {
+		ArticleList []ArticleInfo `json:"articleList"`
+	}
+	// 新增文章, 更新文章, 文章详情
+	ArticleInfo {
+		Id           int    `json:"id"`
+		UserId       int    `json:"userId"`
+		ArticleId    int    `json:"articleId"`
+		ArticleTitle string `json:"articleTitle"`
+		Avatar       string `json:"avatar"`
+		Label        string `json:"label"`
+		IsTop        int    `json:"isTop"`
+		IsPub        int    `json:"isPub"`
+		CommentTotal int    `json:"commentTotal"`
+		SupportTotal int    `json:"supportTotal"`
+		CreateTime   string `json:"createTime"`
+		UpdateTime   string `json:"updateTime"`
+	}
+	ArticleInfoWithContent {
+		ArticleInfo
+		ArticleContent string `json:"articleContent"`
+	}
+	DeleteArticleReq {
+		ArticleId string `json:"articleId"`
+	}
+	SearchArticleListReq {
+		SearchKey string `form:"searchKey"`
+	}
+)
+
+@server(
+	jwt: JwtAuth
+	prefix: /api/article
+)
+service article {
+	@handler GetMyArticleList
+	get /myList (MyArticleListReq) returns (ArticleListResp)
+	
+	@handler AddArticle
+	post /add (ArticleInfoWithContent)
+	
+	@handler UpdateArticle
+	put /update (ArticleInfoWithContent)
+	
+	@handler DeleteArticle
+	delete /delete (DeleteArticleReq)
+}
+
+@server(
+	prefix: /api/article
+)
+service article {
+	@handler GetArticleList
+	get /list (ArticleListReq) returns (ArticleListResp)
+	
+	@handler SearchArticleList
+	get /search (SearchArticleListReq) returns (ArticleListResp)
+}
