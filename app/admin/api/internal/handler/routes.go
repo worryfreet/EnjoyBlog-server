@@ -36,11 +36,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/info",
 				Handler: article.GetArticleInfoHandler(serverCtx),
 			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/adminLogin",
-				Handler: article.AdminLoginHandler(serverCtx),
-			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
 		rest.WithPrefix("/api/admin/article"),

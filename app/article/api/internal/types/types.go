@@ -5,13 +5,14 @@ type ArticleInfoReq struct {
 	ArticleId string `form:"articleId"`
 }
 
+type SearchArticleListReq struct {
+	ArticleListReq
+	IsMine    int    `form:"isMine"`    // 是置位1, 若无置位0
+	SearchKey string `form:"searchKey"` // 搜索关键字
+}
+
 type MyArticleListReq struct {
-	Page           int    `form:"page"`     // 页面
-	PageSize       int    `form:"pageSize"` // 页面大小
-	Desc           int    `form:"desc"`     // 1降序, 0默认升序
-	OrderKey       string `form:"orderKey"` // 排序关键字
-	Tag            string `form:"tag"`
-	UserId         string `form:"userId"`
+	ArticleListReq
 	ArticleGroupId string `form:"articleGroupId"`
 }
 
@@ -20,11 +21,20 @@ type ArticleListReq struct {
 	PageSize int    `form:"pageSize"` // 页面大小
 	Desc     int    `form:"desc"`     // 1降序, 0默认升序
 	OrderKey string `form:"orderKey"` // 排序关键字
-	Tag      string `form:"tag"`
+	Tag      string `form:"tag"`      // 标签
 }
 
 type ArticleListResp struct {
 	ArticleList []ArticleInfo `json:"articleList"`
+}
+
+type EditArticleInfoReq struct {
+	ArticleTitle   string `json:"articleTitle"`
+	ArticleContent string `json:"articleContent"`
+	Avatar         string `json:"avatar"`
+	Label          string `json:"label"`
+	IsTop          int    `json:"isTop"`
+	IsPub          int    `json:"isPub"`
 }
 
 type ArticleInfo struct {
@@ -49,8 +59,4 @@ type ArticleInfoWithContent struct {
 
 type DeleteArticleReq struct {
 	ArticleId string `json:"articleId"`
-}
-
-type SearchArticleListReq struct {
-	SearchKey string `form:"searchKey"`
 }

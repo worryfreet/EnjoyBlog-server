@@ -72,7 +72,7 @@ func (l *LoginLogic) GetJwtToken(userInfo *model.User) (string, error) {
 	claims["id"] = userInfo.Id
 	claims["userId"] = userInfo.UserId
 	claims["email"] = userInfo.Email
-	claims["userInfo"] = userInfo
+	claims["ia"] = userInfo.IsAdmin
 	claims["expire"] = time.Now().Unix() + l.svcCtx.Config.JwtAuth.AccessExpire
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(l.svcCtx.Config.JwtAuth.AccessSecret))

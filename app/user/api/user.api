@@ -93,7 +93,7 @@ service user {
 @server(
 	prefix: /api/base
 	group: base
-	middleware: adminAuth
+	middleware: AdminAuth
 )
 service user {
 	@handler AdminLogin

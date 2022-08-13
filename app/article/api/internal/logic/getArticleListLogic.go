@@ -24,7 +24,6 @@ func NewGetArticleListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetArticleListLogic) GetArticleList(req *types.ArticleListReq) (resp *types.ArticleListResp, err error) {
-	// todo: add your logic here and delete this line
 
 	return
 }

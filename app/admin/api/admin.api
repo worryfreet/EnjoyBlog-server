@@ -34,5 +34,4 @@ service admin {
 service admin {
 	@handler GetArticleInfo
 	get /info (ArticleInfoReq) returns (ArticleInfoResp)
-
 }

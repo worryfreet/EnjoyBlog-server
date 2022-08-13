@@ -31,27 +31,6 @@ type UserListResp struct {
 	UserList []UserInfoResp `json:"userList"`
 }
 
-type AdminLoginReq struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-type AdminLoginResp struct {
-	Id           int64  `json:"id"`
-	UserId       string `json:"userId"`
-	Username     string `json:"username"`
-	Email        string `json:"email"`
-	Phone        string `json:"phone"`
-	Password     string `json:"-"`
-	Avatar       string `json:"avatar"`
-	NickName     string `json:"nickName"`
-	Description  string `json:"description"`
-	CreateTime   string `json:"createTime"`
-	UpdateTime   string `json:"updateTime"`
-	AccessToken  string `json:"access_token"`
-	AccessExpire int64  `json:"access_expire"`
-}
-
 type ArticleInfoReq struct {
 	ArticleId string `json:"articleId"`
 }
