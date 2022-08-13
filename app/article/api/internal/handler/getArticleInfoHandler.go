@@ -11,16 +11,16 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func GetArticleListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func GetArticleInfoHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.ArticleListReq
+		var req types.ArticleInfoReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
 		}
 
-		l := logic.NewGetArticleListLogic(r.Context(), svcCtx)
-		resp, err := l.GetArticleList(&req)
+		l := logic.NewGetArticleInfoLogic(r.Context(), svcCtx)
+		resp, err := l.GetArticleInfo(&req)
 		response.Response(w, resp, err)
 	}
 }

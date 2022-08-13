@@ -7,24 +7,28 @@ info(
 	email: "worryfreet@163.com"
 	version: "v1.0"
 	create_time: "2022/08/11"
-	update_time: "2022/08/12"
+	update_time: "2022/08/13"
 )
 
 type (
-	// 文章详情
+	// 文章详情入参
 	ArticleInfoReq {
 		ArticleId string `form:"articleId"`
 	}
 	// 查询列表
 	SearchArticleListReq {
 		ArticleListReq
-		IsMine    int    `form:"isMine"`    // 是置位1, 若无置位0
-		SearchKey string `form:"searchKey"` // 搜索关键字
+		SearchKey string `form:"searchKey"`
 	}
-	// 我的文章列表
-	MyArticleListReq {
+	// 根据目录分类查询文章列表
+	ArticleListByGroupIdReq {
 		ArticleListReq
 		ArticleGroupId string `form:"articleGroupId"`
+	}
+	// 根据标签查询文章列表
+	ArticleListByLabelReq {
+		ArticleListReq
+		Label string `form:"label"` // 标签
 	}
 	// 公开的文章列表
 	ArticleListReq {
@@ -32,7 +36,7 @@ type (
 		PageSize int    `form:"pageSize"` // 页面大小
 		Desc     int    `form:"desc"`     // 1降序, 0默认升序
 		OrderKey string `form:"orderKey"` // 排序关键字
-		Tag      string `form:"tag"`      // 标签
+		UserId   string `form:"userId"`
 	}
 	// 通用列表响应体
 	ArticleListResp {
@@ -50,8 +54,8 @@ type (
 	//文章详情
 	ArticleInfo {
 		Id           int    `json:"id"`
-		UserId       int    `json:"userId"`
-		ArticleId    int    `json:"articleId"`
+		UserId       string `json:"userId"`
+		ArticleId    string `json:"articleId"`
 		ArticleTitle string `json:"articleTitle"`
 		Avatar       string `json:"avatar"`
 		Label        string `json:"label"`
@@ -82,12 +86,23 @@ type (
 )
 
 @server(
-	jwt: JwtAuth
 	prefix: /api/article
 )
 service article {
-	@handler GetMyArticleList
-	get /myList (MyArticleListReq) returns (ArticleListResp)
+	@handler GetArticleList
+	get /list (ArticleListReq) returns (ArticleListResp)
+	
+	@handler GetArticleListByLabel
+	get /listBylabel (ArticleListByLabelReq) returns (ArticleListResp)
+	
+	@handler GetArticleListByGroupId
+	get /listByGroupId (ArticleListByGroupIdReq) returns (ArticleListResp)
+	
+	@handler GetArticleListBySearch
+	get /search (SearchArticleListReq) returns (ArticleListResp)
+	
+	@handler GetArticleInfo
+	get /info (ArticleInfoReq) returns (ArticleInfoWithContent)
 	
 	@handler AddArticle
 	post /add (EditArticleInfoReq)
@@ -97,15 +112,4 @@ service article {
 	
 	@handler DeleteArticle
 	delete /delete (DeleteArticleReq)
-}
-
-@server(
-	prefix: /api/article
-)
-service article {
-	@handler GetArticleList
-	get /list (ArticleListReq) returns (ArticleListResp)
-	
-	@handler SearchArticleList
-	get /search (SearchArticleListReq) returns (ArticleListResp)
 }

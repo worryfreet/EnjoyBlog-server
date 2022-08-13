@@ -14,8 +14,28 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
-				Path:    "/myList",
-				Handler: GetMyArticleListHandler(serverCtx),
+				Path:    "/list",
+				Handler: GetArticleListHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/listBylabel",
+				Handler: GetArticleListByLabelHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/listByGroupId",
+				Handler: GetArticleListByGroupIdHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/search",
+				Handler: GetArticleListBySearchHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/info",
+				Handler: GetArticleInfoHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
@@ -31,23 +51,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodDelete,
 				Path:    "/delete",
 				Handler: DeleteArticleHandler(serverCtx),
-			},
-		},
-		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
-		rest.WithPrefix("/api/article"),
-	)
-
-	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/list",
-				Handler: GetArticleListHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/search",
-				Handler: SearchArticleListHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/api/article"),

@@ -5,7 +5,7 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
-var articleGroup ArticleGroupModel = (*customArticleGroupModel)(nil)
+var GlobalArticleGroup ArticleGroupModel = (*customArticleGroupModel)(nil)
 
 type (
 	// ArticleGroupModel is an interface to be customized, add more methods here,

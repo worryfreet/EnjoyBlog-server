@@ -9,21 +9,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type SearchArticleListLogic struct {
+type GetArticleListBySearchLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewSearchArticleListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SearchArticleListLogic {
-	return &SearchArticleListLogic{
+func NewGetArticleListBySearchLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetArticleListBySearchLogic {
+	return &GetArticleListBySearchLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *SearchArticleListLogic) SearchArticleList(req *types.SearchArticleListReq) (resp *types.ArticleListResp, err error) {
+func (l *GetArticleListBySearchLogic) GetArticleListBySearch(req *types.SearchArticleListReq) (resp *types.ArticleListResp, err error) {
 	// todo: add your logic here and delete this line
 
 	return

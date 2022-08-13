@@ -7,13 +7,17 @@ type ArticleInfoReq struct {
 
 type SearchArticleListReq struct {
 	ArticleListReq
-	IsMine    int    `form:"isMine"`    // 是置位1, 若无置位0
-	SearchKey string `form:"searchKey"` // 搜索关键字
+	SearchKey string `form:"searchKey"`
 }
 
-type MyArticleListReq struct {
+type ArticleListByGroupIdReq struct {
 	ArticleListReq
 	ArticleGroupId string `form:"articleGroupId"`
+}
+
+type ArticleListByLabelReq struct {
+	ArticleListReq
+	Label string `form:"label"` // 标签
 }
 
 type ArticleListReq struct {
@@ -21,7 +25,7 @@ type ArticleListReq struct {
 	PageSize int    `form:"pageSize"` // 页面大小
 	Desc     int    `form:"desc"`     // 1降序, 0默认升序
 	OrderKey string `form:"orderKey"` // 排序关键字
-	Tag      string `form:"tag"`      // 标签
+	UserId   string `form:"userId"`
 }
 
 type ArticleListResp struct {
@@ -39,8 +43,8 @@ type EditArticleInfoReq struct {
 
 type ArticleInfo struct {
 	Id           int    `json:"id"`
-	UserId       int    `json:"userId"`
-	ArticleId    int    `json:"articleId"`
+	UserId       string `json:"userId"`
+	ArticleId    string `json:"articleId"`
 	ArticleTitle string `json:"articleTitle"`
 	Avatar       string `json:"avatar"`
 	Label        string `json:"label"`
@@ -50,6 +54,17 @@ type ArticleInfo struct {
 	SupportTotal int    `json:"supportTotal"`
 	CreateTime   string `json:"createTime"`
 	UpdateTime   string `json:"updateTime"`
+}
+
+type ArticlePublicInfo struct {
+	UserId       int    `json:"userId"`
+	ArticleId    int    `json:"articleId"`
+	ArticleTitle string `json:"articleTitle"`
+	Avatar       string `json:"avatar"`
+	Label        string `json:"label"`
+	CommentTotal int    `json:"commentTotal"`
+	SupportTotal int    `json:"supportTotal"`
+	CreateTime   string `json:"createTime"`
 }
 
 type ArticleInfoWithContent struct {

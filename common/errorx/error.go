@@ -9,6 +9,7 @@ const (
 	StatusErrUserNoAuth
 	StatusErrParam
 	StatusErrAdminAuth
+	StatusErrTokenNotValid
 	StatusErrNotKnown
 	StatusErrSystemBusy
 )
@@ -27,6 +28,8 @@ func (s Status) Error() string {
 		return "系统内部参数转换类型不匹配"
 	case StatusErrAdminAuth:
 		return "没有管理员权限"
+	case StatusErrTokenNotValid:
+		return "Token无效"
 	case StatusErrNotKnown:
 		return "发生了未知错误"
 	case StatusErrSystemBusy:

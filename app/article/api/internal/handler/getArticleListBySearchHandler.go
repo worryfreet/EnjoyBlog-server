@@ -7,19 +7,20 @@ import (
 	"EnjoyBlog/app/article/api/internal/logic"
 	"EnjoyBlog/app/article/api/internal/svc"
 	"EnjoyBlog/app/article/api/internal/types"
+
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func GetMyArticleListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func GetArticleListBySearchHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.MyArticleListReq
+		var req types.SearchArticleListReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
 		}
 
-		l := logic.NewGetMyArticleListLogic(r.Context(), svcCtx)
-		resp, err := l.GetMyArticleList(&req)
+		l := logic.NewGetArticleListBySearchLogic(r.Context(), svcCtx)
+		resp, err := l.GetArticleListBySearch(&req)
 		response.Response(w, resp, err)
 	}
 }

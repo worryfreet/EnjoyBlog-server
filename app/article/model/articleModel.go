@@ -5,7 +5,7 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
-var article ArticleModel = (*customArticleModel)(nil)
+var GlobalArticle ArticleModel = (*customArticleModel)(nil)
 
 type (
 	// ArticleModel is an interface to be customized, add more methods here,

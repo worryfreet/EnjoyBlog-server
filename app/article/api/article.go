@@ -1,6 +1,7 @@
 package main
 
 import (
+	"EnjoyBlog/app/article/api/internal/middleware"
 	"flag"
 	"fmt"
 
@@ -21,6 +22,7 @@ func main() {
 	conf.MustLoad(*configFile, &c)
 
 	server := rest.MustNewServer(c.RestConf)
+	server.Use(middleware.NewParseJwtToken().Handle)
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)

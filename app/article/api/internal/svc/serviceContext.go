@@ -15,11 +15,13 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	mysqlConn := sqlx.NewMysql(c.Mysql.DataSource)
+	model.GlobalArticle = model.NewArticleModel(mysqlConn, c.CacheRedis)
+	model.GlobalArticleGroup = model.NewArticleGroupModel(mysqlConn, c.CacheRedis)
 	model.GlobalArticleGroupRel = model.NewArticleGroupRelModel(mysqlConn, c.CacheRedis)
 	return &ServiceContext{
 		Config:               c,
-		ArticleModel:         model.NewArticleModel(mysqlConn, c.CacheRedis),
-		ArticleGroupModel:    model.NewArticleGroupModel(mysqlConn, c.CacheRedis),
+		ArticleModel:         model.GlobalArticle,
+		ArticleGroupModel:    model.GlobalArticleGroup,
 		ArticleGroupRelModel: model.GlobalArticleGroupRel,
 	}
 }
