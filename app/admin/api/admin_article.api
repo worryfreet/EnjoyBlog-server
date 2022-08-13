@@ -1,0 +1,20 @@
+syntax = "v1"
+
+info(
+    title: "EnjoyBlog-server admin_article.api"
+    desc: "后端管理员之文章api子模块"
+    author: "github.com/worryfreet"
+    email: "worryfreet@163.com"
+    version: "v1.0"
+    create_time: "2022/08/10"
+    update_time: "2022/08/10"
+)
+
+
+type ArticleInfoReq {
+    ArticleId string `json:"articleId"`
+}
+
+type ArticleInfoResp {
+
+}

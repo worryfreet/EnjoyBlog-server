@@ -1,0 +1,101 @@
+syntax = "v1"
+
+info(
+	title: "EnjoyBlog-server user.api"
+	desc: "后端用户api模块"
+	author: "github.com/worryfreet"
+	email: "worryfreet@163.com"
+	version: "v1.0"
+	create_time: "2022/08/03"
+	update_time: "2022/08/10"
+)
+
+type (
+	User {
+		Id          int64  `json:"id"`
+		UserId      string `json:"userId"`
+		Username    string `json:"username"`
+		Email       string `json:"email"`
+		Phone       string `json:"phone"`
+		Password    string `json:"-"`
+		Avatar      string `json:"avatar"`
+		NickName    string `json:"nickName"`
+		Description string `json:"description"`
+		CreateTime  string `json:"createTime"`
+		UpdateTime  string `json:"updateTime"`
+	}
+	// 注册
+	RegisterReq {
+		Username    string `json:"username"`
+		Email       string `json:"email"`
+		Phone       string `json:"phone"`
+		Password    string `json:"password"`
+		Avatar      string `json:"avatar"`
+		NickName    string `json:"nickName"`
+		Description string `json:"description"`
+	}
+	// 登录
+	LoginReq {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+	LoginResp {
+		User
+		AccessToken  string `json:"access_token"`
+		AccessExpire int64  `json:"access_expire"`
+	}
+	// 修改用户密码
+	UpdatePwdReq {
+		Passwd    string `json:"passwd"`
+		NewPasswd string `json:"newPasswd"`
+		Forget    bool   `json:"forget"`
+	}
+	// 修改用户信息
+	UpdateInfoReq {
+		Username    string `json:"username"`
+		Phone       string `json:"phone"`
+		Avatar      string `json:"avatar"`
+		NickName    string `json:"nickName"`
+		Description string `json:"description"`
+	}
+)
+
+// 基础服务 无jwt验证
+@server (
+	prefix: /api/base
+	group: base
+)
+service user {
+	@handler Login
+	post /login (LoginReq) returns (LoginResp)
+	
+	@handler Register
+	post /register (RegisterReq)
+}
+
+// 用户服务 需jwt验证
+@server(
+	jwt: JwtAuth
+	prefix: api/user
+	group: user
+)
+service user {
+	@handler GetUserInfo
+	get /info returns (User)
+	
+	@handler UpdateUserInfo
+	put /updateInfo (UpdateInfoReq) returns (User)
+	
+	@handler UpdatePwd
+	put /updatePwd (UpdatePwdReq)
+}
+
+@server(
+	prefix: /api/base
+	group: base
+	middleware: AdminAuth
+)
+service user {
+	@handler AdminLogin
+	post /adminLogin (LoginReq) returns (LoginResp)
+}

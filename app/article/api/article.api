@@ -1,0 +1,115 @@
+syntax = "v1"
+
+info(
+	title: "EnjoyBlog-server article.api"
+	desc: "后端文章api模块"
+	author: "github.com/worryfreet"
+	email: "worryfreet@163.com"
+	version: "v1.0"
+	create_time: "2022/08/11"
+	update_time: "2022/08/13"
+)
+
+type (
+	// 文章详情入参
+	ArticleInfoReq {
+		ArticleId string `form:"articleId"`
+	}
+	// 查询列表
+	SearchArticleListReq {
+		ArticleListReq
+		SearchKey string `form:"searchKey"`
+	}
+	// 根据目录分类查询文章列表
+	ArticleListByGroupIdReq {
+		ArticleListReq
+		ArticleGroupId string `form:"articleGroupId"`
+	}
+	// 根据标签查询文章列表
+	ArticleListByLabelReq {
+		ArticleListReq
+		Label string `form:"label"` // 标签
+	}
+	// 公开的文章列表
+	ArticleListReq {
+		Page     int    `form:"page"`     // 页面
+		PageSize int    `form:"pageSize"` // 页面大小
+		Desc     int    `form:"desc"`     // 1降序, 0默认升序
+		OrderKey string `form:"orderKey"` // 排序关键字
+		UserId   string `form:"userId"`
+	}
+	// 通用列表响应体
+	ArticleListResp {
+		ArticleList []ArticleInfo `json:"articleList"`
+	}
+	// 新增文章, 更新文章入参
+	EditArticleInfoReq {
+		ArticleTitle   string `json:"articleTitle"`
+		ArticleContent string `json:"articleContent"`
+		Avatar         string `json:"avatar"`
+		Label          string `json:"label"`
+		IsTop          int    `json:"isTop"`
+		IsPub          int    `json:"isPub"`
+	}
+	//文章详情
+	ArticleInfo {
+		Id           int    `json:"id"`
+		UserId       string `json:"userId"`
+		ArticleId    string `json:"articleId"`
+		ArticleTitle string `json:"articleTitle"`
+		Avatar       string `json:"avatar"`
+		Label        string `json:"label"`
+		IsTop        int    `json:"isTop"`
+		IsPub        int    `json:"isPub"`
+		CommentTotal int    `json:"commentTotal"`
+		SupportTotal int    `json:"supportTotal"`
+		CreateTime   string `json:"createTime"`
+		UpdateTime   string `json:"updateTime"`
+	}
+	ArticlePublicInfo {
+		UserId       int    `json:"userId"`
+		ArticleId    int    `json:"articleId"`
+		ArticleTitle string `json:"articleTitle"`
+		Avatar       string `json:"avatar"`
+		Label        string `json:"label"`
+		CommentTotal int    `json:"commentTotal"`
+		SupportTotal int    `json:"supportTotal"`
+		CreateTime   string `json:"createTime"`
+	}
+	ArticleInfoWithContent {
+		ArticleInfo
+		ArticleContent string `json:"articleContent"`
+	}
+	DeleteArticleReq {
+		ArticleId string `json:"articleId"`
+	}
+)
+
+@server(
+	prefix: /api/article
+)
+service article {
+	@handler GetArticleList
+	get /list (ArticleListReq) returns (ArticleListResp)
+	
+	@handler GetArticleListByLabel
+	get /listBylabel (ArticleListByLabelReq) returns (ArticleListResp)
+	
+	@handler GetArticleListByGroupId
+	get /listByGroupId (ArticleListByGroupIdReq) returns (ArticleListResp)
+	
+	@handler GetArticleListBySearch
+	get /search (SearchArticleListReq) returns (ArticleListResp)
+	
+	@handler GetArticleInfo
+	get /info (ArticleInfoReq) returns (ArticleInfoWithContent)
+	
+	@handler AddArticle
+	post /add (EditArticleInfoReq)
+	
+	@handler UpdateArticle
+	put /update (EditArticleInfoReq)
+	
+	@handler DeleteArticle
+	delete /delete (DeleteArticleReq)
+}

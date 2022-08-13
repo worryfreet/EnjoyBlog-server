@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "./user";
+
+message UserInfoReq {
+  string userId = 1;
+}
+
+message UserInfoResp {
+  int64 id = 1;
+  string userId = 2;
+  string username = 3;
+  string email = 4;
+  string phone = 5;
+  string avatar = 6;
+  string nickName = 7;
+  string description = 8;
+  int32  isAdmin = 9;
+  string createTime = 10;
+  string updateTime = 11;
+}
+
+message UserListReq {
+  int32 page = 1;
+  int32 pageSize = 2;
+  optional int32 desc = 3;
+  optional string orderKey = 4;
+}
+
+message UserListResp {
+  repeated UserInfoResp userList = 1;
+}
+
+service user {
+  rpc getUserInfo(UserInfoReq) returns (UserInfoResp);
+  rpc getUserList(UserListReq) returns (UserListResp);
+}

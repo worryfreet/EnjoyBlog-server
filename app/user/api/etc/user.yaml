@@ -1,0 +1,24 @@
+Name: user
+Host: 127.0.0.1
+Port: 9010
+
+# JWT身份认证
+JwtAuth:
+  AccessSecret: worryfreet
+  AccessExpire: 259200
+
+# Mysql数据库
+Mysql:
+  DataSource: root:123456@tcp(127.0.0.1:3306)/enjoyblog?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+# Redis缓存
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass: '123456'
+    Type: node
+
+UserRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:8080
+    Key: user.rpc

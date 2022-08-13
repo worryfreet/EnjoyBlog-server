@@ -1,0 +1,43 @@
+syntax = "v1"
+
+info(
+    title: "EnjoyBlog-server admin_user.api"
+    desc: "后端管理员之用户api子模块"
+    author: "github.com/worryfreet"
+    email: "worryfreet@163.com"
+    version: "v1.0"
+    create_time: "2022/08/10"
+    update_time: "2022/08/12"
+)
+
+
+type UserInfoReq {
+    UserId      string `form:"userId"`
+}
+
+type UserInfoResp {
+    Id          int64  `json:"id"`
+    IsAdmin     int32   `json:"isAdmin"`
+    UserId      string `json:"userId"`
+    Username    string `json:"username"`
+    Email       string `json:"email"`
+    Phone       string `json:"phone"`
+    Password    string `json:"-"`
+    Avatar      string `json:"avatar"`
+    NickName    string `json:"nickName"`
+    Description string `json:"description"`
+    CreateTime  string `json:"createTime"`
+    UpdateTime  string `json:"updateTime"`
+}
+
+type UserListReq struct {
+    Page     int    `form:"page"`     // 页面
+    PageSize int    `form:"pageSize"` // 页面大小
+    Desc     int    `form:"desc"`     // 1降序, 0默认升序
+    OrderKey string `form:"orderKey"` // 排序关键字
+}
+
+type UserListResp {
+    UserList []UserInfoResp `json:"userList"`
+}
+

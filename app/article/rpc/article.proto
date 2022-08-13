@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package article;
+
+option go_package = "./article";
+
+message StreamReq {
+  string name = 1;
+}
+
+message StreamResp {
+  string greet = 1;
+}
+
+service StreamGreeter {
+  rpc greet(StreamReq) returns (StreamResp);
+}
