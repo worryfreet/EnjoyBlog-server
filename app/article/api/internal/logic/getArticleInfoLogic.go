@@ -1,6 +1,8 @@
 package logic
 
 import (
+	"EnjoyBlog/common/errorx"
+	"EnjoyBlog/common/utils"
 	"context"
 
 	"EnjoyBlog/app/article/api/internal/svc"
@@ -24,7 +26,13 @@ func NewGetArticleInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetArticleInfoLogic) GetArticleInfo(req *types.ArticleInfoReq) (resp *types.ArticleInfoWithContent, err error) {
-	// todo: add your logic here and delete this line
-
+	articleInfo, err := l.svcCtx.ArticleModel.FindOneByArticleId(l.ctx, req.ArticleId)
+	if err != nil {
+		return nil, errorx.StatusErrSystemBusy
+	}
+	resp = new(types.ArticleInfoWithContent)
+	if err = utils.FillModel(&resp, articleInfo); err != nil {
+		return nil, errorx.StatusErrParam
+	}
 	return
 }

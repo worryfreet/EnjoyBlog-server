@@ -33,7 +33,7 @@ func (l *GetArticleListLogic) GetArticleList(req *types.ArticleListReq) (resp *t
 		l.Logger.Error("FillModel err: ", err)
 		return nil, errorx.StatusErrParam
 	}
-	tokenUserId := global.JwtClaims["userId"]
+	tokenUserId := global.Jwt.Claims["userId"]
 	pub := 1
 	if tokenUserId == req.UserId {
 		pub = 0

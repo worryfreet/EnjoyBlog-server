@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS `article`;
 CREATE TABLE article
 (
     id              BIGINT      NOT NULL AUTO_INCREMENT COMMENT '自增id',
-    user_id         VARCHAR(50) NOT NULL UNIQUE COMMENT '用户id',
+    user_id         VARCHAR(50) NOT NULL COMMENT '用户id',
     article_id      VARCHAR(50) NOT NULL UNIQUE COMMENT '文章id',
     article_content LONGTEXT    NOT NULL COMMENT '文章内容',
     article_title   VARCHAR(50) NOT NULL DEFAULT '' COMMENT '文章标题',

@@ -36,4 +36,5 @@ message UserListResp {
 service user {
   rpc getUserInfo(UserInfoReq) returns (UserInfoResp);
   rpc getUserList(UserListReq) returns (UserListResp);
+  rpc getAll(UserListReq) returns (stream UserListResp);
 }

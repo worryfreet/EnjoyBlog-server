@@ -7,9 +7,14 @@ info(
 	email: "worryfreet@163.com"
 	version: "v1.0"
 	create_time: "2022/08/11"
-	update_time: "2022/08/13"
+	update_time: "2022/08/14"
 )
-
+// 测试 @types关键字
+//@types {
+//	golang (
+//		"EnjoyBlog/common/request/request.ArticleListReq"
+//	)
+//}
 type (
 	// 文章详情入参
 	ArticleInfoReq {

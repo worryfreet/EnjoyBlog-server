@@ -1,6 +1,7 @@
 package main
 
 import (
+	"EnjoyBlog/app/article/api/internal/global"
 	"EnjoyBlog/app/article/api/internal/middleware"
 	"flag"
 	"fmt"
@@ -20,6 +21,7 @@ func main() {
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
+	global.InitJwt(c.JwtAuth)
 
 	server := rest.MustNewServer(c.RestConf)
 	server.Use(middleware.NewParseJwtToken().Handle)

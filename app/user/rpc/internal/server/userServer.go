@@ -8,7 +8,7 @@ import (
 
 	"EnjoyBlog/app/user/rpc/internal/logic"
 	"EnjoyBlog/app/user/rpc/internal/svc"
-	"EnjoyBlog/app/user/rpc/types/user"
+	"EnjoyBlog/app/user/rpc/user"
 )
 
 type UserServer struct {
@@ -30,4 +30,9 @@ func (s *UserServer) GetUserInfo(ctx context.Context, in *user.UserInfoReq) (*us
 func (s *UserServer) GetUserList(ctx context.Context, in *user.UserListReq) (*user.UserListResp, error) {
 	l := logic.NewGetUserListLogic(ctx, s.svcCtx)
 	return l.GetUserList(in)
+}
+
+func (s *UserServer) GetAll(in *user.UserListReq, stream user.User_GetAllServer) error {
+	l := logic.NewGetAllLogic(stream.Context(), s.svcCtx)
+	return l.GetAll(in, stream)
 }

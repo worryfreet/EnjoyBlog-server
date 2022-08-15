@@ -1,12 +1,12 @@
 package logic
 
 import (
+	"EnjoyBlog/app/user/rpc/userclient"
 	"EnjoyBlog/common/errorx"
 	"EnjoyBlog/common/utils"
 	"context"
 
 	"EnjoyBlog/app/user/rpc/internal/svc"
-	"EnjoyBlog/app/user/rpc/types/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -25,13 +25,13 @@ func NewGetUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 	}
 }
 
-func (l *GetUserInfoLogic) GetUserInfo(in *user.UserInfoReq) (*user.UserInfoResp, error) {
+func (l *GetUserInfoLogic) GetUserInfo(in *userclient.UserInfoReq) (*userclient.UserInfoResp, error) {
 	userInfo, err := l.svcCtx.UserModel.FindOneByUserId(l.ctx, in.UserId)
 	if err != nil {
 		l.Logger.Error("rpc 根据userId查询用户信息失败, err: ", err)
 		return nil, errorx.StatusErrSystemBusy
 	}
-	resp := new(user.UserInfoResp)
+	resp := new(userclient.UserInfoResp)
 	if err = utils.FillModel(&resp, userInfo); err != nil {
 		l.Logger.Error("rpc FillModel(&resp, userInfo)填充数据失败, err: ", err)
 		return nil, errorx.StatusErrParam

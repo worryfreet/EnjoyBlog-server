@@ -19,15 +19,15 @@ func (m *ParseJwtToken) Handle(next http.HandlerFunc) http.HandlerFunc {
 		token := r.Header.Get("Authorization")
 		j := NewJWT()
 		if token == "" {
-			global.JwtClaims["userId"] = "-1"
+			global.Jwt.Claims["userId"] = "-1"
 			next(w, r)
 		}
 		claims, err := j.ParseToken(token[7:]) // 去除token附加开头
 		if err != nil {
-			global.JwtClaims["userId"] = "-1"
+			global.Jwt.Claims["userId"] = "-1"
 			return
 		}
-		global.JwtClaims = claims
+		global.Jwt.Claims = claims
 		next(w, r)
 	}
 }
@@ -38,7 +38,7 @@ type JWT struct {
 
 func NewJWT() *JWT {
 	return &JWT{
-		[]byte("worryfreet"),
+		[]byte(global.Jwt.AccessSecret),
 	}
 }
 

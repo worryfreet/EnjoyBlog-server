@@ -1,14 +1,12 @@
 package user
 
 import (
-	"EnjoyBlog/app/user/rpc/types/user"
+	"EnjoyBlog/app/user/rpc/userclient"
 	"EnjoyBlog/common/errorx"
 	"EnjoyBlog/common/utils"
 	"context"
 
 	"EnjoyBlog/app/admin/api/internal/svc"
-	"EnjoyBlog/app/admin/api/internal/types"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -26,8 +24,8 @@ func NewGetUserListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 	}
 }
 
-func (l *GetUserListLogic) GetUserList(req *types.UserListReq) (resp *types.UserListResp, err error) {
-	pageLimit := new(user.UserListReq)
+func (l *GetUserListLogic) GetUserList(req *userclient.UserListReq) (resp *userclient.UserListResp, err error) {
+	pageLimit := new(userclient.UserListReq)
 	err = utils.FillModel(&pageLimit, req)
 	if err != nil {
 		l.Logger.Error("FillModel err: ", err)
@@ -37,7 +35,7 @@ func (l *GetUserListLogic) GetUserList(req *types.UserListReq) (resp *types.User
 	if err != nil {
 		return nil, err
 	}
-	resp = new(types.UserListResp)
+	resp = new(userclient.UserListResp)
 	err = utils.FillModel(&resp.UserList, users.UserList)
 	if err != nil {
 		l.Logger.Error("FillModel err: ", err)
