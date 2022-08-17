@@ -21,7 +21,6 @@ type (
 	User interface {
 		GetUserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error)
 		GetUserList(ctx context.Context, in *UserListReq, opts ...grpc.CallOption) (*UserListResp, error)
-		GetAll(ctx context.Context, in *UserListReq, opts ...grpc.CallOption) (user.User_GetAllClient, error)
 	}
 
 	defaultUser struct {
@@ -43,9 +42,4 @@ func (m *defaultUser) GetUserInfo(ctx context.Context, in *UserInfoReq, opts ...
 func (m *defaultUser) GetUserList(ctx context.Context, in *UserListReq, opts ...grpc.CallOption) (*UserListResp, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.GetUserList(ctx, in, opts...)
-}
-
-func (m *defaultUser) GetAll(ctx context.Context, in *UserListReq, opts ...grpc.CallOption) (user.User_GetAllClient, error) {
-	client := user.NewUserClient(m.cli.Conn())
-	return client.GetAll(ctx, in, opts...)
 }

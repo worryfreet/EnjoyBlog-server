@@ -31,8 +31,3 @@ func (s *UserServer) GetUserList(ctx context.Context, in *user.UserListReq) (*us
 	l := logic.NewGetUserListLogic(ctx, s.svcCtx)
 	return l.GetUserList(in)
 }
-
-func (s *UserServer) GetAll(in *user.UserListReq, stream user.User_GetAllServer) error {
-	l := logic.NewGetAllLogic(stream.Context(), s.svcCtx)
-	return l.GetAll(in, stream)
-}

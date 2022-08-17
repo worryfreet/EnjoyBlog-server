@@ -24,7 +24,6 @@ const _ = grpc.SupportPackageIsVersion7
 type UserClient interface {
 	GetUserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error)
 	GetUserList(ctx context.Context, in *UserListReq, opts ...grpc.CallOption) (*UserListResp, error)
-	GetAll(ctx context.Context, in *UserListReq, opts ...grpc.CallOption) (User_GetAllClient, error)
 }
 
 type userClient struct {
@@ -53,45 +52,12 @@ func (c *userClient) GetUserList(ctx context.Context, in *UserListReq, opts ...g
 	return out, nil
 }
 
-func (c *userClient) GetAll(ctx context.Context, in *UserListReq, opts ...grpc.CallOption) (User_GetAllClient, error) {
-	stream, err := c.cc.NewStream(ctx, &User_ServiceDesc.Streams[0], "/user.user/getAll", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &userGetAllClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type User_GetAllClient interface {
-	Recv() (*UserListResp, error)
-	grpc.ClientStream
-}
-
-type userGetAllClient struct {
-	grpc.ClientStream
-}
-
-func (x *userGetAllClient) Recv() (*UserListResp, error) {
-	m := new(UserListResp)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
 	GetUserInfo(context.Context, *UserInfoReq) (*UserInfoResp, error)
 	GetUserList(context.Context, *UserListReq) (*UserListResp, error)
-	GetAll(*UserListReq, User_GetAllServer) error
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -104,9 +70,6 @@ func (UnimplementedUserServer) GetUserInfo(context.Context, *UserInfoReq) (*User
 }
 func (UnimplementedUserServer) GetUserList(context.Context, *UserListReq) (*UserListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserList not implemented")
-}
-func (UnimplementedUserServer) GetAll(*UserListReq, User_GetAllServer) error {
-	return status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -157,27 +120,6 @@ func _User_GetUserList_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_GetAll_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(UserListReq)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(UserServer).GetAll(m, &userGetAllServer{stream})
-}
-
-type User_GetAllServer interface {
-	Send(*UserListResp) error
-	grpc.ServerStream
-}
-
-type userGetAllServer struct {
-	grpc.ServerStream
-}
-
-func (x *userGetAllServer) Send(m *UserListResp) error {
-	return x.ServerStream.SendMsg(m)
-}
-
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -194,12 +136,6 @@ var User_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _User_GetUserList_Handler,
 		},
 	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "getAll",
-			Handler:       _User_GetAll_Handler,
-			ServerStreams: true,
-		},
-	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "user.proto",
 }

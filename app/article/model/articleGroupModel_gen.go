@@ -29,12 +29,12 @@ var (
 
 type (
 	articleGroupModel interface {
-		Insert(ctx context.Context, data *ArticleGroup) (sql.Result, error)
+		Insert(ctx context.Context, data *ArticleGroup, session sqlx.Session) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*ArticleGroup, error)
 		FindOneByArticleGroupId(ctx context.Context, articleGroupId string) (*ArticleGroup, error)
 		FindOneByUserId(ctx context.Context, userId string) (*ArticleGroup, error)
-		Update(ctx context.Context, data *ArticleGroup) error
-		Delete(ctx context.Context, id int64) error
+		Update(ctx context.Context, data *ArticleGroup, session sqlx.Session) error
+		Delete(ctx context.Context, id int64, session sqlx.Session) error
 	}
 
 	defaultArticleGroupModel struct {
@@ -61,7 +61,7 @@ func newArticleGroupModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultArticleG
 	}
 }
 
-func (m *defaultArticleGroupModel) Delete(ctx context.Context, id int64) error {
+func (m *defaultArticleGroupModel) Delete(ctx context.Context, id int64, session sqlx.Session) error {
 	data, err := m.FindOne(ctx, id)
 	if err != nil {
 		return err
@@ -72,7 +72,10 @@ func (m *defaultArticleGroupModel) Delete(ctx context.Context, id int64) error {
 	articleGroupUserIdKey := fmt.Sprintf("%s%v", cacheArticleGroupUserIdPrefix, data.UserId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
-		return conn.ExecCtx(ctx, query, id)
+		if session == nil {
+			return conn.ExecCtx(ctx, query, id)
+		}
+		return session.ExecCtx(ctx, query, id)
 	}, articleGroupArticleGroupIdKey, articleGroupIdKey, articleGroupUserIdKey)
 	return err
 }
@@ -134,18 +137,21 @@ func (m *defaultArticleGroupModel) FindOneByUserId(ctx context.Context, userId s
 	}
 }
 
-func (m *defaultArticleGroupModel) Insert(ctx context.Context, data *ArticleGroup) (sql.Result, error) {
+func (m *defaultArticleGroupModel) Insert(ctx context.Context, data *ArticleGroup, session sqlx.Session) (sql.Result, error) {
 	articleGroupArticleGroupIdKey := fmt.Sprintf("%s%v", cacheArticleGroupArticleGroupIdPrefix, data.ArticleGroupId)
 	articleGroupIdKey := fmt.Sprintf("%s%v", cacheArticleGroupIdPrefix, data.Id)
 	articleGroupUserIdKey := fmt.Sprintf("%s%v", cacheArticleGroupUserIdPrefix, data.UserId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, articleGroupRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.UserId, data.ArticleGroupId, data.ArticleGroupTitle, data.ParentId, data.DeletedTime)
+		if session == nil {
+			return conn.ExecCtx(ctx, query, data.UserId, data.ArticleGroupId, data.ArticleGroupTitle, data.ParentId, data.DeletedTime)
+		}
+		return session.ExecCtx(ctx, query, data.UserId, data.ArticleGroupId, data.ArticleGroupTitle, data.ParentId, data.DeletedTime)
 	}, articleGroupArticleGroupIdKey, articleGroupIdKey, articleGroupUserIdKey)
 	return ret, err
 }
 
-func (m *defaultArticleGroupModel) Update(ctx context.Context, newData *ArticleGroup) error {
+func (m *defaultArticleGroupModel) Update(ctx context.Context, newData *ArticleGroup, session sqlx.Session) error {
 	data, err := m.FindOne(ctx, newData.Id)
 	if err != nil {
 		return err
@@ -156,7 +162,10 @@ func (m *defaultArticleGroupModel) Update(ctx context.Context, newData *ArticleG
 	articleGroupUserIdKey := fmt.Sprintf("%s%v", cacheArticleGroupUserIdPrefix, data.UserId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, articleGroupRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.UserId, newData.ArticleGroupId, newData.ArticleGroupTitle, newData.ParentId, newData.DeletedTime, newData.Id)
+		if session == nil {
+			return conn.ExecCtx(ctx, query, newData.UserId, newData.ArticleGroupId, newData.ArticleGroupTitle, newData.ParentId, newData.DeletedTime, newData.Id)
+		}
+		return session.ExecCtx(ctx, query, newData.UserId, newData.ArticleGroupId, newData.ArticleGroupTitle, newData.ParentId, newData.DeletedTime, newData.Id)
 	}, articleGroupArticleGroupIdKey, articleGroupIdKey, articleGroupUserIdKey)
 	return err
 }

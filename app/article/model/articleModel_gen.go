@@ -24,17 +24,15 @@ var (
 
 	cacheArticleIdPrefix        = "cache:article:id:"
 	cacheArticleArticleIdPrefix = "cache:article:articleId:"
-	cacheArticleUserIdPrefix    = "cache:article:userId:"
 )
 
 type (
 	articleModel interface {
-		Insert(ctx context.Context, data *Article) (sql.Result, error)
+		Insert(ctx context.Context, data *Article, session sqlx.Session) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*Article, error)
 		FindOneByArticleId(ctx context.Context, articleId string) (*Article, error)
-		FindOneByUserId(ctx context.Context, userId string) (*Article, error)
-		Update(ctx context.Context, data *Article) error
-		Delete(ctx context.Context, id int64) error
+		Update(ctx context.Context, data *Article, session sqlx.Session) error
+		Delete(ctx context.Context, id int64, session sqlx.Session) error
 	}
 
 	defaultArticleModel struct {
@@ -43,17 +41,17 @@ type (
 	}
 
 	Article struct {
-		Id             int64        `db:"id"`              // 自增id
-		UserId         string       `db:"user_id"`         // 用户id
-		ArticleId      string       `db:"article_id"`      // 文章id
-		ArticleContent string       `db:"article_content"` // 文章内容
-		ArticleTitle   string       `db:"article_title"`   // 文章标题
-		Avatar         string       `db:"avatar"`          // 文章封面
-		Label          string       `db:"label"`           // 文章标签
-		IsTop          int64        `db:"is_top"`          // 是否置顶（1置顶，0默认不置顶）
-		IsPub          int64        `db:"is_pub"`          // 是否公开（1公开，0默认私密）
-		CommentTotal   int64        `db:"comment_total"`   // 获得评论数量
-		SupportTotal   int64        `db:"support_total"`   // 获得点赞数量
+		Id             int64        `db:"id"`               // 自增id
+		UserId         string       `db:"user_id"`          // 用户id
+		ArticleId      string       `db:"article_id"`       // 文章id
+		ArticleCttHead string       `db:"article_ctt_head"` // 文章内容开头
+		ArticleTitle   string       `db:"article_title"`    // 文章标题
+		Avatar         string       `db:"avatar"`           // 文章封面
+		Label          string       `db:"label"`            // 文章标签
+		IsTop          int64        `db:"is_top"`           // 是否置顶（1置顶，0默认不置顶）
+		IsPub          int64        `db:"is_pub"`           // 是否公开（1公开，0默认私密）
+		CommentTotal   int64        `db:"comment_total"`    // 获得评论数量
+		SupportTotal   int64        `db:"support_total"`    // 获得点赞数量
 		CreateTime     time.Time    `db:"create_time"`
 		UpdateTime     time.Time    `db:"update_time"`
 		DeletedTime    sql.NullTime `db:"deleted_time"`
@@ -67,7 +65,7 @@ func newArticleModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultArticleModel 
 	}
 }
 
-func (m *defaultArticleModel) Delete(ctx context.Context, id int64) error {
+func (m *defaultArticleModel) Delete(ctx context.Context, id int64, session sqlx.Session) error {
 	data, err := m.FindOne(ctx, id)
 	if err != nil {
 		return err
@@ -75,11 +73,13 @@ func (m *defaultArticleModel) Delete(ctx context.Context, id int64) error {
 
 	articleArticleIdKey := fmt.Sprintf("%s%v", cacheArticleArticleIdPrefix, data.ArticleId)
 	articleIdKey := fmt.Sprintf("%s%v", cacheArticleIdPrefix, id)
-	articleUserIdKey := fmt.Sprintf("%s%v", cacheArticleUserIdPrefix, data.UserId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
-		return conn.ExecCtx(ctx, query, id)
-	}, articleArticleIdKey, articleIdKey, articleUserIdKey)
+		if session == nil {
+			return conn.ExecCtx(ctx, query, id)
+		}
+		return session.ExecCtx(ctx, query, id)
+	}, articleArticleIdKey, articleIdKey)
 	return err
 }
 
@@ -120,38 +120,20 @@ func (m *defaultArticleModel) FindOneByArticleId(ctx context.Context, articleId 
 	}
 }
 
-func (m *defaultArticleModel) FindOneByUserId(ctx context.Context, userId string) (*Article, error) {
-	articleUserIdKey := fmt.Sprintf("%s%v", cacheArticleUserIdPrefix, userId)
-	var resp Article
-	err := m.QueryRowIndexCtx(ctx, &resp, articleUserIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
-		query := fmt.Sprintf("select %s from %s where `user_id` = ? limit 1", articleRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, userId); err != nil {
-			return nil, err
-		}
-		return resp.Id, nil
-	}, m.queryPrimary)
-	switch err {
-	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
-	default:
-		return nil, err
-	}
-}
-
-func (m *defaultArticleModel) Insert(ctx context.Context, data *Article) (sql.Result, error) {
+func (m *defaultArticleModel) Insert(ctx context.Context, data *Article, session sqlx.Session) (sql.Result, error) {
 	articleArticleIdKey := fmt.Sprintf("%s%v", cacheArticleArticleIdPrefix, data.ArticleId)
 	articleIdKey := fmt.Sprintf("%s%v", cacheArticleIdPrefix, data.Id)
-	articleUserIdKey := fmt.Sprintf("%s%v", cacheArticleUserIdPrefix, data.UserId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, articleRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.UserId, data.ArticleId, data.ArticleContent, data.ArticleTitle, data.Avatar, data.Label, data.IsTop, data.IsPub, data.CommentTotal, data.SupportTotal, data.DeletedTime)
-	}, articleArticleIdKey, articleIdKey, articleUserIdKey)
+		if session == nil {
+			return conn.ExecCtx(ctx, query, data.UserId, data.ArticleId, data.ArticleCttHead, data.ArticleTitle, data.Avatar, data.Label, data.IsTop, data.IsPub, data.CommentTotal, data.SupportTotal, data.DeletedTime)
+		}
+		return session.ExecCtx(ctx, query, data.UserId, data.ArticleId, data.ArticleCttHead, data.ArticleTitle, data.Avatar, data.Label, data.IsTop, data.IsPub, data.CommentTotal, data.SupportTotal, data.DeletedTime)
+	}, articleArticleIdKey, articleIdKey)
 	return ret, err
 }
 
-func (m *defaultArticleModel) Update(ctx context.Context, newData *Article) error {
+func (m *defaultArticleModel) Update(ctx context.Context, newData *Article, session sqlx.Session) error {
 	data, err := m.FindOne(ctx, newData.Id)
 	if err != nil {
 		return err
@@ -159,11 +141,13 @@ func (m *defaultArticleModel) Update(ctx context.Context, newData *Article) erro
 
 	articleArticleIdKey := fmt.Sprintf("%s%v", cacheArticleArticleIdPrefix, data.ArticleId)
 	articleIdKey := fmt.Sprintf("%s%v", cacheArticleIdPrefix, data.Id)
-	articleUserIdKey := fmt.Sprintf("%s%v", cacheArticleUserIdPrefix, data.UserId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, articleRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.UserId, newData.ArticleId, newData.ArticleContent, newData.ArticleTitle, newData.Avatar, newData.Label, newData.IsTop, newData.IsPub, newData.CommentTotal, newData.SupportTotal, newData.DeletedTime, newData.Id)
-	}, articleArticleIdKey, articleIdKey, articleUserIdKey)
+		if session == nil {
+			return conn.ExecCtx(ctx, query, newData.UserId, newData.ArticleId, newData.ArticleCttHead, newData.ArticleTitle, newData.Avatar, newData.Label, newData.IsTop, newData.IsPub, newData.CommentTotal, newData.SupportTotal, newData.DeletedTime, newData.Id)
+		}
+		return session.ExecCtx(ctx, query, newData.UserId, newData.ArticleId, newData.ArticleCttHead, newData.ArticleTitle, newData.Avatar, newData.Label, newData.IsTop, newData.IsPub, newData.CommentTotal, newData.SupportTotal, newData.DeletedTime, newData.Id)
+	}, articleArticleIdKey, articleIdKey)
 	return err
 }
 
