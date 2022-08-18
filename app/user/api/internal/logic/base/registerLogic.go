@@ -54,7 +54,3 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) error {
 	}
 	return nil
 }
-
-func defaultFillNullVal(user *model.User) {
-
-}

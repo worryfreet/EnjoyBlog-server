@@ -28,21 +28,20 @@ func NewGetArticleListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetArticleListLogic) GetArticleList(req *types.ArticleListReq) (resp *types.ArticleListResp, err error) {
+	// 1. 转换入参结构体
 	var queryReq *request.ArticleListReq
 	if err = utils.FillModel(&queryReq, req); err != nil {
 		l.Logger.Error("FillModel err: ", err)
 		return nil, errorx.StatusErrParam
 	}
-	tokenUserId := global.Jwt.Claims["userId"]
-	pub := 1
-	if tokenUserId == req.UserId {
-		pub = 0
-	}
-	articles, err := l.svcCtx.ArticleModel.FindList(l.ctx, queryReq, pub)
+	// 2. 查询文章列表
+	tokenUserId := global.Jwt.Claims["userId"].(string)
+	articles, err := l.svcCtx.ArticleModel.FindList(l.ctx, queryReq, tokenUserId)
 	if err != nil {
-		l.Logger.Error("查询我的文章列表失败, err: ", err)
+		l.Logger.Error("查询文章列表失败, err: ", err)
 		return nil, errorx.StatusErrSystemBusy
 	}
+	// 3. 转换出参结构体
 	resp = new(types.ArticleListResp)
 	if err = utils.FillModel(&resp.ArticleList, articles); err != nil {
 		l.Logger.Error("FillModel err: ", err)

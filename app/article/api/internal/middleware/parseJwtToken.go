@@ -21,6 +21,7 @@ func (m *ParseJwtToken) Handle(next http.HandlerFunc) http.HandlerFunc {
 		if token == "" {
 			global.Jwt.Claims["userId"] = "-1"
 			next(w, r)
+			return
 		}
 		claims, err := j.ParseToken(token[7:]) // 去除token附加开头
 		if err != nil {

@@ -6,11 +6,7 @@ import (
 )
 
 func TestRsaPubEncode(t *testing.T) {
-	encode, err := RsaPubEncode("123456")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	encode := RsaPubEncode("123456")
 	fmt.Println(encode)
 	fmt.Println(RsaPriDecode(encode))
 }

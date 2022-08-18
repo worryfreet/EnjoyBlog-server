@@ -11,6 +11,7 @@ type ServiceContext struct {
 	ArticleModel         model.ArticleModel
 	ArticleGroupModel    model.ArticleGroupModel
 	ArticleGroupRelModel model.ArticleGroupRelModel
+	ArticleContentModel  model.ArticleContentModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -18,10 +19,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	model.GlobalArticle = model.NewArticleModel(mysqlConn, c.CacheRedis)
 	model.GlobalArticleGroup = model.NewArticleGroupModel(mysqlConn, c.CacheRedis)
 	model.GlobalArticleGroupRel = model.NewArticleGroupRelModel(mysqlConn, c.CacheRedis)
+	model.GlobalArticleContent = model.NewArticleContentModel(mysqlConn, c.CacheRedis)
 	return &ServiceContext{
 		Config:               c,
 		ArticleModel:         model.GlobalArticle,
 		ArticleGroupModel:    model.GlobalArticleGroup,
 		ArticleGroupRelModel: model.GlobalArticleGroupRel,
+		ArticleContentModel:  model.GlobalArticleContent,
 	}
 }

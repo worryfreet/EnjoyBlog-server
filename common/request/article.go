@@ -27,4 +27,16 @@ type (
 		ArticleListReq
 		Label string `form:"label"` // 标签
 	}
+
+	// 新增文章, 更新文章入参
+	EditArticleInfoReq struct {
+		ArticleTitle   string `json:"articleTitle"`
+		ArticleCttHtml string `json:"articleCttHtml"`
+		ArticleCttMd   string `json:"articleCttMd"`
+		ArticleGroupId string `json:"articleGroupId"`
+		Avatar         string `json:"avatar"`
+		Label          string `json:"label"`
+		IsTop          int    `json:"isTop"`
+		IsPub          int    `json:"isPub"`
+	}
 )

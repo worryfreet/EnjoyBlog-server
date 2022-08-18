@@ -7,14 +7,9 @@ info(
 	email: "worryfreet@163.com"
 	version: "v1.0"
 	create_time: "2022/08/11"
-	update_time: "2022/08/14"
+	update_time: "2022/08/17"
 )
-// 测试 @types关键字
-//@types {
-//	golang (
-//		"EnjoyBlog/common/request/request.ArticleListReq"
-//	)
-//}
+
 type (
 	// 文章详情入参
 	ArticleInfoReq {
@@ -47,10 +42,23 @@ type (
 	ArticleListResp {
 		ArticleList []ArticleInfo `json:"articleList"`
 	}
-	// 新增文章, 更新文章入参
-	EditArticleInfoReq {
+	// 新增文章入参
+	AddArticleInfoReq {
 		ArticleTitle   string `json:"articleTitle"`
-		ArticleContent string `json:"articleContent"`
+		ArticleCttHtml string `json:"articleCttHtml"`
+		ArticleCttMd   string `json:"articleCttMd"`
+		ArticleGroupId string `json:"articleGroupId"`
+		Avatar         string `json:"avatar"`
+		Label          string `json:"label"`
+		IsTop          int    `json:"isTop"`
+		IsPub          int    `json:"isPub"`
+	}
+	// 更新文章入参
+	UpdateArticleInfoReq {
+		ArticleId      string `json:"articleId"`
+		ArticleTitle   string `json:"articleTitle"`
+		ArticleCttHtml string `json:"articleCttHtml"`
+		ArticleCttMd   string `json:"articleCttMd"`
 		Avatar         string `json:"avatar"`
 		Label          string `json:"label"`
 		IsTop          int    `json:"isTop"`
@@ -58,32 +66,35 @@ type (
 	}
 	//文章详情
 	ArticleInfo {
-		Id           int    `json:"id"`
-		UserId       string `json:"userId"`
-		ArticleId    string `json:"articleId"`
-		ArticleTitle string `json:"articleTitle"`
-		Avatar       string `json:"avatar"`
-		Label        string `json:"label"`
-		IsTop        int    `json:"isTop"`
-		IsPub        int    `json:"isPub"`
-		CommentTotal int    `json:"commentTotal"`
-		SupportTotal int    `json:"supportTotal"`
-		CreateTime   string `json:"createTime"`
-		UpdateTime   string `json:"updateTime"`
+		Id             int    `json:"id"`
+		UserId         string `json:"userId"`
+		ArticleId      string `json:"articleId"`
+		ArticleTitle   string `json:"articleTitle"`
+		ArticleCttHead string `json:"articleCttHead"` // 文章内容开头
+		Avatar         string `json:"avatar"`
+		Label          string `json:"label"`
+		IsTop          int    `json:"isTop"`
+		IsPub          int    `json:"isPub"`
+		CommentTotal   int    `json:"commentTotal"`
+		SupportTotal   int    `json:"supportTotal"`
+		CreateTime     string `json:"createTime"`
+		UpdateTime     string `json:"updateTime"`
 	}
 	ArticlePublicInfo {
-		UserId       int    `json:"userId"`
-		ArticleId    int    `json:"articleId"`
-		ArticleTitle string `json:"articleTitle"`
-		Avatar       string `json:"avatar"`
-		Label        string `json:"label"`
-		CommentTotal int    `json:"commentTotal"`
-		SupportTotal int    `json:"supportTotal"`
-		CreateTime   string `json:"createTime"`
+		UserId         int    `json:"userId"`
+		ArticleId      int    `json:"articleId"`
+		ArticleTitle   string `json:"articleTitle"`
+		ArticleCttHead string `json:"article_ctt_head"` // 文章内容开头
+		Avatar         string `json:"avatar"`
+		Label          string `json:"label"`
+		CommentTotal   int    `json:"commentTotal"`
+		SupportTotal   int    `json:"supportTotal"`
+		CreateTime     string `json:"createTime"`
 	}
 	ArticleInfoWithContent {
 		ArticleInfo
-		ArticleContent string `json:"articleContent"`
+		ArticleCttHtml string `json:"articleCttHtml"`
+		ArticleCttMd   string `json:"articleCttMd"`
 	}
 	DeleteArticleReq {
 		ArticleId string `json:"articleId"`
@@ -110,10 +121,10 @@ service article {
 	get /info (ArticleInfoReq) returns (ArticleInfoWithContent)
 	
 	@handler AddArticle
-	post /add (EditArticleInfoReq)
+	post /add (AddArticleInfoReq)
 	
 	@handler UpdateArticle
-	put /update (EditArticleInfoReq)
+	put /update (UpdateArticleInfoReq)
 	
 	@handler DeleteArticle
 	delete /delete (DeleteArticleReq)

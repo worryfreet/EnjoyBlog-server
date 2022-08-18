@@ -34,13 +34,9 @@ func (l *GetArticleListByGroupIdLogic) GetArticleListByGroupId(req *types.Articl
 		return nil, errorx.StatusErrParam
 	}
 	tokenUserId := l.ctx.Value("userId").(string)
-	pub := 1
-	if tokenUserId == req.UserId {
-		pub = 0
-	}
-	articles, err := l.svcCtx.ArticleModel.FindListByGroupId(l.ctx, queryReq, pub)
+	articles, err := l.svcCtx.ArticleModel.FindListByGroupId(l.ctx, queryReq, tokenUserId)
 	if err != nil {
-		l.Logger.Error("查询我的文章列表失败, err: ", err)
+		l.Logger.Error("根据目录分类查询文章列表失败, err: ", err)
 		return nil, errorx.StatusErrSystemBusy
 	}
 	resp = new(types.ArticleListResp)

@@ -23,7 +23,7 @@ func (s Status) Error() string {
 	case StatusErrUserPwd:
 		return "用户名或密码错误"
 	case StatusErrUserNoAuth:
-		return "请登录后查看"
+		return "该账号未授权"
 	case StatusErrParam:
 		return "系统内部参数转换类型不匹配"
 	case StatusErrAdminAuth:

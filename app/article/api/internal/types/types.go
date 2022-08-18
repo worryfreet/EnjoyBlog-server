@@ -32,9 +32,22 @@ type ArticleListResp struct {
 	ArticleList []ArticleInfo `json:"articleList"`
 }
 
-type EditArticleInfoReq struct {
+type AddArticleInfoReq struct {
 	ArticleTitle   string `json:"articleTitle"`
-	ArticleContent string `json:"articleContent"`
+	ArticleCttHtml string `json:"articleCttHtml"`
+	ArticleCttMd   string `json:"articleCttMd"`
+	ArticleGroupId string `json:"articleGroupId"`
+	Avatar         string `json:"avatar"`
+	Label          string `json:"label"`
+	IsTop          int    `json:"isTop"`
+	IsPub          int    `json:"isPub"`
+}
+
+type UpdateArticleInfoReq struct {
+	ArticleId      string `json:"articleId"`
+	ArticleTitle   string `json:"articleTitle"`
+	ArticleCttHtml string `json:"articleCttHtml"`
+	ArticleCttMd   string `json:"articleCttMd"`
 	Avatar         string `json:"avatar"`
 	Label          string `json:"label"`
 	IsTop          int    `json:"isTop"`
@@ -42,34 +55,37 @@ type EditArticleInfoReq struct {
 }
 
 type ArticleInfo struct {
-	Id           int    `json:"id"`
-	UserId       string `json:"userId"`
-	ArticleId    string `json:"articleId"`
-	ArticleTitle string `json:"articleTitle"`
-	Avatar       string `json:"avatar"`
-	Label        string `json:"label"`
-	IsTop        int    `json:"isTop"`
-	IsPub        int    `json:"isPub"`
-	CommentTotal int    `json:"commentTotal"`
-	SupportTotal int    `json:"supportTotal"`
-	CreateTime   string `json:"createTime"`
-	UpdateTime   string `json:"updateTime"`
+	Id             int    `json:"id"`
+	UserId         string `json:"userId"`
+	ArticleId      string `json:"articleId"`
+	ArticleTitle   string `json:"articleTitle"`
+	ArticleCttHead string `json:"articleCttHead"` // 文章内容开头
+	Avatar         string `json:"avatar"`
+	Label          string `json:"label"`
+	IsTop          int    `json:"isTop"`
+	IsPub          int    `json:"isPub"`
+	CommentTotal   int    `json:"commentTotal"`
+	SupportTotal   int    `json:"supportTotal"`
+	CreateTime     string `json:"createTime"`
+	UpdateTime     string `json:"updateTime"`
 }
 
 type ArticlePublicInfo struct {
-	UserId       int    `json:"userId"`
-	ArticleId    int    `json:"articleId"`
-	ArticleTitle string `json:"articleTitle"`
-	Avatar       string `json:"avatar"`
-	Label        string `json:"label"`
-	CommentTotal int    `json:"commentTotal"`
-	SupportTotal int    `json:"supportTotal"`
-	CreateTime   string `json:"createTime"`
+	UserId         int    `json:"userId"`
+	ArticleId      int    `json:"articleId"`
+	ArticleTitle   string `json:"articleTitle"`
+	ArticleCttHead string `json:"article_ctt_head"` // 文章内容开头
+	Avatar         string `json:"avatar"`
+	Label          string `json:"label"`
+	CommentTotal   int    `json:"commentTotal"`
+	SupportTotal   int    `json:"supportTotal"`
+	CreateTime     string `json:"createTime"`
 }
 
 type ArticleInfoWithContent struct {
 	ArticleInfo
-	ArticleContent string `json:"articleContent"`
+	ArticleCttHtml string `json:"articleCttHtml"`
+	ArticleCttMd   string `json:"articleCttMd"`
 }
 
 type DeleteArticleReq struct {
