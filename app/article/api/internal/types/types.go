@@ -91,3 +91,7 @@ type ArticleInfoWithContent struct {
 type DeleteArticleReq struct {
 	ArticleId string `json:"articleId"`
 }
+
+type SupportReq struct {
+	ArticleId string `json:"articleId"`
+}

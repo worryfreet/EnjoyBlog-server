@@ -3,8 +3,8 @@ module EnjoyBlog
 go 1.19
 
 require (
+	github.com/GUAIK-ORG/go-snowflake v0.0.0-20200116064823-220c4260e85f
 	github.com/form3tech-oss/jwt-go v3.2.3+incompatible
-	github.com/google/uuid v1.3.0
 	github.com/wenzhenxi/gorsa v0.0.0-20220418014903-15feec0f05a6
 	github.com/zeromicro/go-zero v1.3.5
 	google.golang.org/grpc v1.47.0
@@ -25,12 +25,13 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
+	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/gnostic v0.5.5 // indirect
-	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/mattn/go-colorable v0.1.9 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect

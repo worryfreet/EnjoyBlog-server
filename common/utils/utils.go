@@ -2,13 +2,17 @@ package utils
 
 import (
 	"encoding/json"
-	"github.com/google/uuid"
-	"strings"
+	"github.com/GUAIK-ORG/go-snowflake/snowflake"
+	"strconv"
 )
 
-func NewUUID() string {
-	u, _ := uuid.NewUUID()
-	return strings.ReplaceAll(u.String(), "-", "")
+func NewObjID() string {
+	paramId := int64(0)
+	snowId, err := snowflake.NewSnowflake(paramId, paramId)
+	if err != nil {
+		return ""
+	}
+	return strconv.FormatInt(snowId.NextVal(), 10)
 }
 
 func FillModel(dest, model interface{}) error {
@@ -18,3 +22,5 @@ func FillModel(dest, model interface{}) error {
 	}
 	return json.Unmarshal(modelBytes, dest)
 }
+
+// Wait For Updating...

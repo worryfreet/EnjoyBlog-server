@@ -1,27 +1,73 @@
 syntax = "v1"
 
 info(
-    title: "type title here"
-    desc: "type desc here"
-    author: "type author here"
-    email: "type email here"
-    version: "type version here"
+	title: "EnjoyBlog-server comment.api"
+	desc: "后端评论api模块"
+	author: "github.com/worryfreet"
+	email: "worryfreet@163.com"
+	version: "v1.0"
+	create_time: "2022/08/18"
+	update_time: "2022/08/18"
 )
 
-
-type request {
-    // TODO: add members here and delete this comment
+type CommentListReq {
+	ArticleId string `json:"articleId"`
 }
 
-type response {
-    // TODO: add members here and delete this comment
+type CommentListResp {
+	CommentList []CommentInfo `json:"commentList"`
+}
+
+type CommentInfo {
+	Id               int64  `json:"id"`               // 自增id
+	CommentId        string `json:"commentId"`        // 评论id
+	CommentContent   string `json:"commentContent"`   // 评论内容
+	CommentatorName  string `json:"commentatorName"`  // 发表评论者
+	CommentatorEmail string `json:"commentatorEmail"` // 发表评论者邮箱
+	SupportTotal     int64  `json:"supportTotal"`     // 点赞总数
+	ArticleId        string `json:"articleId"`        // 文章id
+	ParentId         string `json:"parentId"`         // 父评论id, 0默认顶层
+	IsPub            int64  `json:"isPub"`            // 评论是否仅最多三方可看, 1默认公开
+	CreateTime       string `json:"createTime"`
+}
+
+type AddCommentReq {
+	CommentContent   string `json:"commentContent"`   // 评论内容
+	CommentatorName  string `json:"commentatorName"`  // 发表评论者
+	CommentatorEmail string `json:"commentatorEmail"` // 发表评论者邮箱
+	ArticleId        string `json:"articleId"`        // 文章id
+	ParentId         string `json:"parentId"`         // 父评论id, 0默认顶层
+	IsPub            int64  `json:"isPub"`            // 评论是否仅最多三方可看, 1默认公开
+}
+
+type DeleteCommentReq {
+	ArticleId string `json:"articleId"`
+	CommentId string `json:"commentId"`
+}
+
+type SupportReq {
+	CommentId string `json:"commentId"`
 }
 
 @server(
-    jwt: Auth
-    group: template
+	prefix: /api/comment
 )
-service template {
-    @handler handlerName // TODO: replace handler name and delete this comment
-    get /users/id/:userId (request) returns (response)
+service comment {
+	@handler GetCommentList
+	get /list (CommentListReq) returns (CommentListResp)
+	
+	@handler AddComment
+	post /add (AddCommentReq)
+	
+	@handler support
+	post /support (SupportReq)
+}
+
+@server(
+	jwt: JwtAuth
+	prefix: /api/comment
+)
+service comment {
+	@handler DeleteComment
+	delete /delete (DeleteCommentReq)
 }

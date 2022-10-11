@@ -99,6 +99,9 @@ type (
 	DeleteArticleReq {
 		ArticleId string `json:"articleId"`
 	}
+	SupportReq {
+		ArticleId string `json:"articleId"`
+	}
 )
 
 @server(
@@ -120,6 +123,15 @@ service article {
 	@handler GetArticleInfo
 	get /info (ArticleInfoReq) returns (ArticleInfoWithContent)
 	
+	@handler Support
+	post /support (SupportReq)
+}
+
+@server(
+	prefix: /api/article
+	jwt: JwtAuth
+)
+service article {
 	@handler AddArticle
 	post /add (AddArticleInfoReq)
 	

@@ -39,6 +39,17 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/support",
+				Handler: SupportHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/article"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
 				Path:    "/add",
 				Handler: AddArticleHandler(serverCtx),
 			},
@@ -53,6 +64,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: DeleteArticleHandler(serverCtx),
 			},
 		},
+		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
 		rest.WithPrefix("/api/article"),
 	)
 }

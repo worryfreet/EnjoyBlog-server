@@ -39,7 +39,7 @@ func (l *AddArticleLogic) AddArticle(req *types.AddArticleInfoReq) error {
 	// 2. 设置article入参
 	article := new(model.Article)
 	_ = utils.FillModel(&article, req)
-	article.ArticleId = utils.NewUUID()
+	article.ArticleId = utils.NewObjID()
 	article.UserId = global.Jwt.Claims["userId"].(string)
 	if len(req.ArticleCttHtml) > 100 {
 		article.ArticleCttHead = req.ArticleCttHtml[:100]

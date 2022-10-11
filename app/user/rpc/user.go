@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 
@@ -10,6 +11,7 @@ import (
 	"EnjoyBlog/app/user/rpc/user"
 
 	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/netx"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -17,6 +19,16 @@ import (
 )
 
 var configFile = flag.String("f", "etc/user.yaml", "the config file")
+
+func init() {
+	var c zrpc.RpcServerConf
+	conf.MustLoad(*configFile, &c)
+
+	server := zrpc.MustNewServer(c, func(grpcServer *grpc.Server) {
+
+	})
+	fmt.Println(server)
+}
 
 func main() {
 	flag.Parse()
@@ -35,6 +47,10 @@ func main() {
 	})
 	defer s.Stop()
 
+	s.AddUnaryInterceptors(func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+		netx.InternalIp()
+		return handler(ctx, req)
+	})
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
 }

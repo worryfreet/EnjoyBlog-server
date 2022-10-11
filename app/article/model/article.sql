@@ -49,7 +49,7 @@ DROP TABLE IF EXISTS `article_group`;
 CREATE TABLE article_group
 (
     id                  BIGINT      NOT NULL AUTO_INCREMENT COMMENT '自增id',
-    user_id             VARCHAR(50) NOT NULL UNIQUE COMMENT '用户id',
+    user_id             VARCHAR(50) NOT NULL COMMENT '用户id',
     article_group_id    VARCHAR(50) NOT NULL UNIQUE COMMENT '分类目录id',
     article_group_title VARCHAR(50) NOT NULL DEFAULT '' COMMENT '分类目录标题',
     parent_id           VARCHAR(50) NOT NULL COMMENT '上级分类目录id',

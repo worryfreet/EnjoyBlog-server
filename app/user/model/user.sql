@@ -3,7 +3,7 @@ CREATE TABLE user (
     id           BIGINT(20)   NOT NULL AUTO_INCREMENT COMMENT '自增id',
     user_id      VARCHAR(50)  NOT NULL UNIQUE COMMENT '用户id',
     user_name    VARCHAR(30)  NOT NULL COMMENT '用户姓名',
-    email        VARCHAR(30)  NOT NULL UNIQUE DEFAULT '' COMMENT '用户邮箱',
+    email        VARCHAR(40)  NOT NULL UNIQUE DEFAULT '' COMMENT '用户邮箱',
     phone        VARCHAR(20)                  DEFAULT '' COMMENT '手机号',
     password     VARCHAR(100) NOT NULL COMMENT '密码',
     avatar       VARCHAR(100)                 DEFAULT '' COMMENT '用户头像',

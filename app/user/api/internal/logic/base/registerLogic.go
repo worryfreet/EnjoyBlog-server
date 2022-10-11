@@ -36,7 +36,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) error {
 		return errorx.StatusErrUserExist
 	}
 	userData := &model.User{
-		UserId:      utils.NewUUID(),
+		UserId:      utils.NewObjID(),
 		CreateTime:  time.Now(),
 		UpdateTime:  time.Now(),
 		DeletedTime: sql.NullTime{Valid: false},
